@@ -1,5 +1,6 @@
 package com.example.viewmodel
 
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.example.data.model.ParcelCategory
 import com.example.data.model.SavedPlaceEntity
 import com.example.data.model.VehicleOption
 import com.example.data.repository.RideOneRepository
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,15 +66,34 @@ class RideOneViewModel(
     val authError: StateFlow<String?> =
         authManager?.authError ?: MutableStateFlow(null)
 
-    // Detected Location State
+    // Detected Location & Map Coordinates State
     private val _detectedLocation = MutableStateFlow("Ongole Central (Current Location)")
     val detectedLocation: StateFlow<String> = _detectedLocation.asStateFlow()
+
+    private val _currentLocationLatLng = MutableStateFlow(LatLng(15.5057, 80.0499))
+    val currentLocationLatLng: StateFlow<LatLng> = _currentLocationLatLng.asStateFlow()
+
+    private val _pickupLatLng = MutableStateFlow(LatLng(15.5057, 80.0499))
+    val pickupLatLng: StateFlow<LatLng> = _pickupLatLng.asStateFlow()
+
+    private val _dropoffLatLng = MutableStateFlow(LatLng(15.5180, 80.0380))
+    val dropoffLatLng: StateFlow<LatLng> = _dropoffLatLng.asStateFlow()
+
+    private val _pickupAddress = MutableStateFlow("Ongole Central Bus Stand")
+    val pickupAddress: StateFlow<String> = _pickupAddress.asStateFlow()
+
+    private val _dropoffAddress = MutableStateFlow("Ongole Railway Station (OGL)")
+    val dropoffAddress: StateFlow<String> = _dropoffAddress.asStateFlow()
 
     fun detectLocation(onSuccess: (String) -> Unit = {}, onError: (String) -> Unit = {}) {
         val service = locationService
         if (service != null && service.hasLocationPermission()) {
             service.fetchCurrentLocation(
-                onSuccess = { _, _, address ->
+                onSuccess = { lat, lng, address ->
+                    val latLng = LatLng(lat, lng)
+                    _currentLocationLatLng.value = latLng
+                    _pickupLatLng.value = latLng
+                    _pickupAddress.value = address
                     _detectedLocation.value = address
                     onSuccess(address)
                 },
@@ -85,6 +106,50 @@ class RideOneViewModel(
             _detectedLocation.value = "Ongole Central (Current Location)"
             onSuccess("Ongole Central (Current Location)")
         }
+    }
+
+    fun setPickup(latLng: LatLng, address: String? = null) {
+        _pickupLatLng.value = latLng
+        val resolved = address ?: locationService?.resolveAddress(latLng.latitude, latLng.longitude)
+            ?: "Pickup (${String.format(java.util.Locale.US, "%.4f", latLng.latitude)}, ${String.format(java.util.Locale.US, "%.4f", latLng.longitude)})"
+        _pickupAddress.value = resolved
+        _detectedLocation.value = resolved
+    }
+
+    fun setDropoff(latLng: LatLng, address: String? = null) {
+        _dropoffLatLng.value = latLng
+        val resolved = address ?: locationService?.resolveAddress(latLng.latitude, latLng.longitude)
+            ?: "Drop-off (${String.format(java.util.Locale.US, "%.4f", latLng.latitude)}, ${String.format(java.util.Locale.US, "%.4f", latLng.longitude)})"
+        _dropoffAddress.value = resolved
+    }
+
+    fun swapPickupAndDropoff() {
+        val tempLatLng = _pickupLatLng.value
+        val tempAddr = _pickupAddress.value
+        _pickupLatLng.value = _dropoffLatLng.value
+        _pickupAddress.value = _dropoffAddress.value
+        _dropoffLatLng.value = tempLatLng
+        _dropoffAddress.value = tempAddr
+    }
+
+    fun calculateRouteDistanceKm(): Double {
+        val p1 = _pickupLatLng.value
+        val p2 = _dropoffLatLng.value
+        val results = FloatArray(1)
+        Location.distanceBetween(p1.latitude, p1.longitude, p2.latitude, p2.longitude, results)
+        val km = results[0] / 1000.0
+        return if (km < 0.1) 1.2 else Math.round(km * 10.0) / 10.0
+    }
+
+    fun calculateEstimatedMinutes(): Int {
+        val km = calculateRouteDistanceKm()
+        val mins = ((km / 25.0) * 60).toInt() + 2
+        return mins.coerceAtLeast(3)
+    }
+
+    fun resolveAddressForCoordinates(latLng: LatLng): String {
+        return locationService?.resolveAddress(latLng.latitude, latLng.longitude)
+            ?: "Location (${String.format(java.util.Locale.US, "%.4f", latLng.latitude)}, ${String.format(java.util.Locale.US, "%.4f", latLng.longitude)})"
     }
 
     fun signInWithEmail(email: String, pass: String, onResult: (Boolean, String?) -> Unit) {

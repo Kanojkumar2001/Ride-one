@@ -24,10 +24,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
@@ -82,11 +84,14 @@ fun ParcelBookingScreen(
     onConfirmParcel: (String, String, String, String) -> Unit,
     onVerifyOtp: (String) -> Boolean,
     onBack: () -> Unit,
+    initialPickupLocation: String = "Tech Hub, South Bypass, Ongole",
+    initialDropLocation: String = "Lawyer Pet, Ongole",
+    onOpenMap: () -> Unit = {},
     onDetectLocation: ((String) -> Unit) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    var pickupLocation by remember { mutableStateOf("Tech Hub, South Bypass, Ongole") }
-    var dropLocation by remember { mutableStateOf("Lawyer Pet, Ongole") }
+    var pickupLocation by remember(initialPickupLocation) { mutableStateOf(initialPickupLocation) }
+    var dropLocation by remember(initialDropLocation) { mutableStateOf(initialDropLocation) }
     var receiverName by remember { mutableStateOf("Suresh Reddy") }
     var receiverPhone by remember { mutableStateOf("+91 98480 11223") }
     var deliveryAddress by remember { mutableStateOf("Door #14-2-90, 2nd Cross, Lawyer Pet") }
@@ -506,6 +511,57 @@ fun ParcelBookingScreen(
                                     .fillMaxWidth()
                                     .testTag("parcel_drop_input")
                             )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            // Set on Google Map Card
+                            Surface(
+                                shape = RoundedCornerShape(12.dp),
+                                color = com.example.ui.theme.PolishIndigo50,
+                                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFC7D2FE)),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable(onClick = onOpenMap)
+                                    .testTag("parcel_open_map_card")
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            imageVector = Icons.Default.Map,
+                                            contentDescription = null,
+                                            tint = com.example.ui.theme.PolishIndigo600,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(10.dp))
+                                        Column {
+                                            Text(
+                                                text = "Pin on Google Map",
+                                                fontSize = 13.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = com.example.ui.theme.PolishSlate900
+                                            )
+                                            Text(
+                                                text = "Pinpoint exact pickup & delivery on live map",
+                                                fontSize = 11.sp,
+                                                fontWeight = FontWeight.Medium,
+                                                color = com.example.ui.theme.PolishSlate600
+                                            )
+                                        }
+                                    }
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                        contentDescription = null,
+                                        tint = com.example.ui.theme.PolishIndigo600,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }

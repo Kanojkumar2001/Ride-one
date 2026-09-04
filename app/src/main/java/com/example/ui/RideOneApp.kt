@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.Icon
@@ -57,6 +58,7 @@ import com.example.ui.components.SosConfirmationDialog
 import com.example.ui.screens.ActivityScreen
 import com.example.ui.screens.DriverBookingScreen
 import com.example.ui.screens.HomeScreen
+import com.example.ui.screens.MapScreen
 import com.example.ui.screens.ParcelBookingScreen
 import com.example.ui.screens.ProfileScreen
 import com.example.ui.screens.RideBookingScreen
@@ -78,6 +80,7 @@ data class BottomNavDestination(
 
 val BottomNavItems = listOf(
     BottomNavDestination("home", "Home", Icons.Default.Home),
+    BottomNavDestination("map", "Map", Icons.Default.Map),
     BottomNavDestination("services", "Services", Icons.Default.GridView),
     BottomNavDestination("safety", "Safety", Icons.Default.Security),
     BottomNavDestination("profile", "Profile", Icons.Default.Person)
@@ -303,9 +306,7 @@ fun RideOneApp(
                                     )
                                 },
                                 onRadarClick = {
-                                    coroutineScope.launch {
-                                        snackbarHostState.showSnackbar("Radar Active: Live scan finding nearby verified drivers")
-                                    }
+                                    navController.navigate("map")
                                 },
                                 onVerifyOtp = {
                                     viewModel.verifyRideOtp()
@@ -317,6 +318,26 @@ fun RideOneApp(
                                 onCancelBooking = { viewModel.cancelActiveBooking() },
                                 onSosClick = { viewModel.openSosConfirmation() },
                                 onSimulate15MinWarning = { viewModel.testTrigger15MinWarning() }
+                            )
+                        }
+                        composable("map") {
+                            MapScreen(
+                                viewModel = viewModel,
+                                onBack = {
+                                    if (navController.previousBackStackEntry != null) {
+                                        navController.popBackStack()
+                                    } else {
+                                        navController.navigate("home")
+                                    }
+                                },
+                                onConfirmSelection = { pickup, dropoff ->
+                                    navController.navigate("ride") {
+                                        popUpTo("home") { inclusive = false }
+                                    }
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar("Locations set from Google Map! Confirm vehicle.")
+                                    }
+                                }
                             )
                         }
                         composable("services") {
@@ -335,10 +356,16 @@ fun RideOneApp(
                             )
                         }
                         composable("ride") {
+                            val mapPickup by viewModel.pickupAddress.collectAsState()
+                            val mapDrop by viewModel.dropoffAddress.collectAsState()
+
                             RideBookingScreen(
                                 vehicleOptions = viewModel.vehicleOptions,
                                 selectedVehicleId = selectedVehicleId,
                                 isGirlRiderAvailable = isGirlRiderAvailable,
+                                initialPickupLocation = mapPickup,
+                                initialDropLocation = mapDrop,
+                                onOpenMap = { navController.navigate("map") },
                                 onSelectVehicle = { viewModel.selectVehicle(it) },
                                 onToggleGirlRider = { viewModel.toggleGirlRiderAvailability() },
                                 onConfirmRide = { pickup, drop ->
@@ -357,10 +384,16 @@ fun RideOneApp(
                             )
                         }
                         composable("parcel") {
+                            val mapPickup by viewModel.pickupAddress.collectAsState()
+                            val mapDrop by viewModel.dropoffAddress.collectAsState()
+
                             ParcelBookingScreen(
                                 categories = viewModel.parcelCategories,
                                 selectedCategoryId = selectedParcelCategory,
                                 activeBooking = activeBooking,
+                                initialPickupLocation = mapPickup,
+                                initialDropLocation = mapDrop,
+                                onOpenMap = { navController.navigate("map") },
                                 onSelectCategory = { viewModel.selectParcelCategory(it) },
                                 onConfirmParcel = { pickup, drop, recName, recPhone ->
                                     viewModel.requestParcel(pickup, drop, recName, recPhone)

@@ -72,7 +72,7 @@ class LocationService(private val context: Context) {
         }
     }
 
-    private fun resolveAddress(latitude: Double, longitude: Double): String {
+    fun resolveAddress(latitude: Double, longitude: Double): String {
         return try {
             val geocoder = Geocoder(context, Locale.getDefault())
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

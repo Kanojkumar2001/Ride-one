@@ -23,8 +23,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.SwapVert
@@ -80,11 +82,14 @@ fun RideBookingScreen(
     onToggleGirlRider: () -> Unit,
     onConfirmRide: (String, String) -> Unit,
     onBack: () -> Unit,
+    initialPickupLocation: String = "Current Location (Ongole Central)",
+    initialDropLocation: String = "Ongole Railway Station (OGL)",
+    onOpenMap: () -> Unit = {},
     onDetectLocation: ((String) -> Unit) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    var pickupLocation by remember { mutableStateOf("Current Location (Ongole Central)") }
-    var dropLocation by remember { mutableStateOf("Ongole Railway Station (OGL)") }
+    var pickupLocation by remember(initialPickupLocation) { mutableStateOf(initialPickupLocation) }
+    var dropLocation by remember(initialDropLocation) { mutableStateOf(initialDropLocation) }
     var isDetectingPickupLocation by remember { mutableStateOf(false) }
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
@@ -280,6 +285,57 @@ fun RideBookingScreen(
                                 .fillMaxWidth()
                                 .testTag("ride_drop_input")
                         )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Interactive Google Map Picker Button
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = com.example.ui.theme.PolishIndigo50,
+                            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFC7D2FE)),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(onClick = onOpenMap)
+                                .testTag("set_on_google_map_card")
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.Map,
+                                        contentDescription = null,
+                                        tint = com.example.ui.theme.PolishIndigo600,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Column {
+                                        Text(
+                                            text = "Set Markers on Google Map",
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = com.example.ui.theme.PolishSlate900
+                                        )
+                                        Text(
+                                            text = "Tap or drag pins to pinpoint exact pickup & drop-off",
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = com.example.ui.theme.PolishSlate600
+                                        )
+                                    }
+                                }
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                    contentDescription = "Open Map",
+                                    tint = com.example.ui.theme.PolishIndigo600,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }
