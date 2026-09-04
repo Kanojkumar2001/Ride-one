@@ -1,6 +1,5 @@
 package com.example.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,11 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AdminPanelSettings
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SignalCellularConnectedNoInternet0Bar
-import androidx.compose.material.icons.filled.TwoWheeler
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,94 +28,108 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.R
 import com.example.ui.theme.PolishBorder
-import com.example.ui.theme.PolishIndigo100
-import com.example.ui.theme.PolishIndigo50
-import com.example.ui.theme.PolishIndigo600
 import com.example.ui.theme.PolishRose50
 import com.example.ui.theme.PolishRose600
 import com.example.ui.theme.PolishSlate100
 import com.example.ui.theme.PolishSlate500
+import com.example.ui.theme.PolishSlate800
 import com.example.ui.theme.PolishSlate900
 import com.example.ui.theme.PolishSurface
-import com.example.viewmodel.AppEcosystemMode
+import com.example.ui.theme.RideDarkBackground
+import com.example.ui.theme.RideOrangePrimary
 
 @Composable
 fun AppHeader(
-    currentMode: AppEcosystemMode,
-    isOffline: Boolean,
-    onSelectMode: (AppEcosystemMode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    locationText: String = "Hitech City, Madhapur",
+    isOffline: Boolean = false,
+    onLocationClick: () -> Unit = {},
+    onNotificationClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {}
 ) {
     Surface(
         color = PolishSurface,
-        border = androidx.compose.foundation.BorderStroke(1.dp, PolishBorder),
-        shadowElevation = 2.dp,
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 16.dp, vertical = 10.dp)
         ) {
-            // Top Row: Brand, Location, and User Avatar
+            // Top Row: Logo, Brand Text, Notification Bell, User Avatar
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                // Left Brand Section: Logo + "RIDE ONE"
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Stylized Logo: Black rounded square with orange 'R' and white 'I'
                     Box(
                         modifier = Modifier
                             .size(38.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(PolishIndigo50),
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(RideDarkBackground),
                         contentAlignment = Alignment.Center
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_rideone_logo),
-                            contentDescription = "Ride One Logo",
-                            modifier = Modifier.size(28.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Column {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
                             Text(
-                                text = "RIDE",
+                                text = "R",
                                 fontWeight = FontWeight.Black,
-                                fontSize = 18.sp,
-                                color = PolishSlate900,
-                                letterSpacing = 1.sp
+                                fontSize = 19.sp,
+                                color = RideOrangePrimary
                             )
-                            Spacer(modifier = Modifier.width(3.dp))
+                            Spacer(modifier = Modifier.width(1.dp))
                             Text(
-                                text = "ONE",
+                                text = "I",
                                 fontWeight = FontWeight.Black,
-                                fontSize = 18.sp,
-                                color = PolishIndigo600,
-                                letterSpacing = 1.sp
+                                fontSize = 19.sp,
+                                color = Color.White
                             )
                         }
+                    }
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Text(
+                        text = "RIDE",
+                        fontWeight = FontWeight.Black,
+                        fontSize = 19.sp,
+                        color = PolishSlate900,
+                        letterSpacing = 0.5.sp
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(RideOrangePrimary)
+                            .padding(horizontal = 7.dp, vertical = 2.dp)
+                    ) {
                         Text(
-                            text = "One App. Every Move.",
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = PolishSlate500
+                            text = "ONE",
+                            fontWeight = FontWeight.Black,
+                            fontSize = 13.sp,
+                            color = Color.White,
+                            letterSpacing = 0.5.sp
                         )
                     }
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                // Right Actions: Notification Bell + Profile Avatar
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     if (isOffline) {
                         Surface(
                             shape = RoundedCornerShape(20.dp),
@@ -144,136 +157,95 @@ fun AppHeader(
                         }
                     }
 
-                    // Location Chip (Pill styled with Indigo accent)
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = PolishIndigo50,
-                        border = androidx.compose.foundation.BorderStroke(1.dp, PolishIndigo100)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.LocationOn,
-                                contentDescription = "Location",
-                                tint = PolishIndigo600,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "Ongole, AP",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = PolishIndigo600
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    // User Profile Avatar (matching Professional Polish avatar from design)
+                    // Notification Button with red dot badge
                     Box(
                         modifier = Modifier
-                            .size(36.dp)
+                            .size(38.dp)
                             .clip(CircleShape)
-                            .background(PolishIndigo100)
-                            .border(2.dp, Color.White, CircleShape),
+                            .background(PolishSlate100)
+                            .clickable(onClick = onNotificationClick),
                         contentAlignment = Alignment.Center
                     ) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Notifications",
+                            tint = PolishSlate800,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        // Red indicator dot on top-right of bell
                         Box(
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(8.dp)
+                                .align(Alignment.TopEnd)
                                 .clip(CircleShape)
-                                .background(PolishIndigo600),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "RO",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                        }
+                                .background(Color(0xFFEF4444))
+                                .border(1.dp, Color.White, CircleShape)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    // User Profile Circular Avatar Button (Black background with white silhouette)
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(CircleShape)
+                            .background(RideDarkBackground)
+                            .clickable(onClick = onProfileClick)
+                            .testTag("header_profile_avatar"),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "User Profile",
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            // Ecosystem Switcher Tabs (Segmented control in Slate 100 with white active pill)
-            Row(
+            // Location Selector Pill Card
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = Color.White,
+                border = androidx.compose.foundation.BorderStroke(1.dp, PolishBorder),
+                shadowElevation = 1.dp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(PolishSlate100)
-                    .padding(3.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .clickable(onClick = onLocationClick)
+                    .testTag("header_location_chip")
             ) {
-                EcosystemTabItem(
-                    title = "User App",
-                    icon = Icons.Default.Person,
-                    isSelected = currentMode == AppEcosystemMode.USER_APP,
-                    onClick = { onSelectMode(AppEcosystemMode.USER_APP) },
-                    modifier = Modifier.weight(1f)
-                )
-                EcosystemTabItem(
-                    title = "Driver Partner",
-                    icon = Icons.Default.TwoWheeler,
-                    isSelected = currentMode == AppEcosystemMode.DRIVER_APP,
-                    onClick = { onSelectMode(AppEcosystemMode.DRIVER_APP) },
-                    modifier = Modifier.weight(1f)
-                )
-                EcosystemTabItem(
-                    title = "Admin Portal",
-                    icon = Icons.Default.AdminPanelSettings,
-                    isSelected = currentMode == AppEcosystemMode.ADMIN_PORTAL,
-                    onClick = { onSelectMode(AppEcosystemMode.ADMIN_PORTAL) },
-                    modifier = Modifier.weight(1f)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 9.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = "Location Pin",
+                        tint = RideOrangePrimary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = locationText,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = PolishSlate800,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Select Location",
+                        tint = PolishSlate500,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
-        }
-    }
-}
-
-@Composable
-private fun EcosystemTabItem(
-    title: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(if (isSelected) Color.White else Color.Transparent)
-            .then(
-                if (isSelected) {
-                    Modifier.shadow(2.dp, RoundedCornerShape(12.dp))
-                } else Modifier
-            )
-            .clickable(onClick = onClick)
-            .padding(vertical = 8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = title,
-                tint = if (isSelected) PolishIndigo600 else PolishSlate500,
-                modifier = Modifier.size(15.dp)
-            )
-            Spacer(modifier = Modifier.width(5.dp))
-            Text(
-                text = title,
-                fontSize = 11.sp,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                color = if (isSelected) PolishSlate900 else PolishSlate500
-            )
         }
     }
 }

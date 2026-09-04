@@ -66,6 +66,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.data.model.BookingEntity
 import com.example.data.model.driverPhotoUrl
+import com.example.ui.theme.PolishBorder
+import com.example.ui.theme.PolishSlate400
+import com.example.ui.theme.PolishSlate600
+import com.example.ui.theme.PolishSlate700
+import com.example.ui.theme.PolishSlate800
+import com.example.ui.theme.PolishSlate900
 import com.example.ui.theme.RideBackgroundLight
 import com.example.ui.theme.RideBorderLight
 import com.example.ui.theme.RideDeepNavy
@@ -362,6 +368,10 @@ fun SosConfirmationDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = Color.White,
+        titleContentColor = PolishSlate900,
+        textContentColor = PolishSlate800,
+        shape = RoundedCornerShape(24.dp),
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "🚨", fontSize = 24.sp)
@@ -369,6 +379,7 @@ fun SosConfirmationDialog(
                 Text(
                     text = "Emergency SOS Alert",
                     fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
                     color = RideSOSRed
                 )
             }
@@ -378,13 +389,14 @@ fun SosConfirmationDialog(
                 Text(
                     text = "Are you sure you want to send an emergency safety alert?",
                     fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = RideTextPrimary
+                    fontWeight = FontWeight.Bold,
+                    color = PolishSlate900
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Surface(
                     shape = RoundedCornerShape(12.dp),
-                    color = RideSOSRedContainer,
+                    color = Color(0xFFFEE2E2),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFCA5A5)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
@@ -392,14 +404,14 @@ fun SosConfirmationDialog(
                             text = "Safety Protocol:",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
-                            color = RideSOSRedDark
+                            color = Color(0xFF991B1B)
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "• Live GPS location will be broadcast to your saved emergency contacts.\n• Platform safety team will be notified immediately.\n• Driver personal contact details will NOT be exposed to ensure mutual safety.",
-                            fontSize = 11.sp,
-                            color = RideSOSRedDark,
-                            lineHeight = 15.sp
+                            fontSize = 12.sp,
+                            color = Color(0xFF7F1D1D),
+                            lineHeight = 16.sp
                         )
                     }
                 }
@@ -408,8 +420,8 @@ fun SosConfirmationDialog(
         confirmButton = {
             Button(
                 onClick = onConfirmSos,
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = RideSOSRed),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = RideSOSRed, contentColor = Color.White),
                 modifier = Modifier.testTag("send_sos_confirm_button")
             ) {
                 Text("Send SOS Now", fontWeight = FontWeight.Bold, color = Color.White)
@@ -417,7 +429,7 @@ fun SosConfirmationDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", color = RideTextSecondary)
+                Text("Cancel", color = PolishSlate600, fontWeight = FontWeight.SemiBold)
             }
         }
     )
@@ -435,19 +447,24 @@ fun PaymentDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = Color.White,
+        titleContentColor = PolishSlate900,
+        textContentColor = PolishSlate800,
+        shape = RoundedCornerShape(24.dp),
         title = {
             Text(
-                text = "Trip Completed • Transparent Payment",
+                text = "Trip Completed • Payment",
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                color = RideDeepNavy
+                color = PolishSlate900
             )
         },
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Surface(
                     shape = RoundedCornerShape(14.dp),
-                    color = RideBackgroundLight,
+                    color = Color(0xFFF8FAFC),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, com.example.ui.theme.PolishBorder),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(14.dp)) {
@@ -455,49 +472,72 @@ fun PaymentDialog(
                             text = "Fare Breakdown",
                             fontWeight = FontWeight.Bold,
                             fontSize = 13.sp,
-                            color = RideDeepNavy
+                            color = PolishSlate900
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         FareRow("Ride Base Fare", "₹${(fare * 0.7).toInt()}")
                         FareRow("Distance & Time Charge", "₹${(fare * 0.2).toInt()}")
                         FareRow("Platform Fee", "₹10")
                         FareRow("Taxes & GST", "₹${(fare * 0.05).toInt()}")
-                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = RideBorderLight)
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = com.example.ui.theme.PolishBorder)
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Total Payable", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = RideDeepNavy)
-                            Text("₹${fare.toInt()}", fontWeight = FontWeight.Black, fontSize = 18.sp, color = RideDeepNavy)
+                            Text("Total Payable", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = PolishSlate900)
+                            Text("₹${fare.toInt()}", fontWeight = FontWeight.Black, fontSize = 20.sp, color = com.example.ui.theme.RideOrangePrimary)
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
                     text = "Choose Payment Method",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = RideDeepNavy
+                    color = PolishSlate900
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 methods.forEach { method ->
                     val isChosen = selectedMethod.startsWith(method.take(3))
-                    Row(
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isChosen) Color(0xFFFFF1EB) else Color(0xFFF8FAFC),
+                        border = androidx.compose.foundation.BorderStroke(
+                            1.dp,
+                            if (isChosen) com.example.ui.theme.RideOrangePrimary else com.example.ui.theme.PolishBorder
+                        ),
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(vertical = 4.dp)
                             .clickable { onSelectMethod(method) }
-                            .padding(vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        RadioButton(
-                            selected = isChosen,
-                            onClick = { onSelectMethod(method) },
-                            colors = RadioButtonDefaults.colors(selectedColor = RideDeepNavy)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = method, fontSize = 13.sp, color = RideTextPrimary)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = isChosen,
+                                onClick = { onSelectMethod(method) },
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = com.example.ui.theme.RideOrangePrimary,
+                                    unselectedColor = PolishSlate400
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = method,
+                                fontSize = 14.sp,
+                                fontWeight = if (isChosen) FontWeight.Bold else FontWeight.Medium,
+                                color = PolishSlate900
+                            )
+                        }
                     }
                 }
             }
@@ -506,12 +546,17 @@ fun PaymentDialog(
             Button(
                 onClick = onConfirmPayment,
                 shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.PolishIndigo600, contentColor = Color.White),
+                colors = ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.RideOrangePrimary, contentColor = Color.White),
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("confirm_payment_button")
             ) {
-                Text("Pay ₹${fare.toInt()}", fontWeight = FontWeight.Bold)
+                Text("Pay ₹${fare.toInt()}", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
+                Text("Pay Later / Cash", color = PolishSlate600, fontWeight = FontWeight.SemiBold)
             }
         }
     )
@@ -532,12 +577,16 @@ fun RatingDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = Color.White,
+        titleContentColor = PolishSlate900,
+        textContentColor = PolishSlate800,
+        shape = RoundedCornerShape(24.dp),
         title = {
             Text(
                 text = "How was your ride?",
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                color = com.example.ui.theme.PolishSlate900,
+                color = PolishSlate900,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -557,7 +606,7 @@ fun RatingDialog(
                             Icon(
                                 imageVector = Icons.Default.Star,
                                 contentDescription = "$star stars",
-                                tint = if (star <= score) com.example.ui.theme.PolishAmber500 else com.example.ui.theme.PolishSlate200,
+                                tint = if (star <= score) com.example.ui.theme.PolishAmber500 else Color(0xFFCBD5E1),
                                 modifier = Modifier.size(36.dp)
                             )
                         }
@@ -568,7 +617,7 @@ fun RatingDialog(
                     text = "Tell us about your experience",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = com.example.ui.theme.PolishSlate600
+                    color = PolishSlate700
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -582,10 +631,10 @@ fun RatingDialog(
                         val isSelected = selectedTags.contains(tag)
                         Surface(
                             shape = RoundedCornerShape(16.dp),
-                            color = if (isSelected) com.example.ui.theme.PolishIndigo600 else com.example.ui.theme.PolishIndigo50,
+                            color = if (isSelected) com.example.ui.theme.RideOrangePrimary else Color(0xFFF1F5F9),
                             border = androidx.compose.foundation.BorderStroke(
                                 1.dp,
-                                if (isSelected) com.example.ui.theme.PolishIndigo600 else com.example.ui.theme.PolishBorder
+                                if (isSelected) com.example.ui.theme.RideOrangePrimary else com.example.ui.theme.PolishBorder
                             ),
                             modifier = Modifier.clickable {
                                 if (isSelected) selectedTags.remove(tag) else selectedTags.add(tag)
@@ -593,9 +642,9 @@ fun RatingDialog(
                         ) {
                             Text(
                                 text = tag,
-                                fontSize = 11.sp,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = if (isSelected) Color.White else com.example.ui.theme.PolishIndigo600,
+                                fontSize = 12.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                color = if (isSelected) Color.White else PolishSlate800,
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
                             )
                         }
@@ -606,7 +655,7 @@ fun RatingDialog(
 
                 if (!showReportBox) {
                     TextButton(onClick = { showReportBox = true }) {
-                        Text("Report an issue with this trip", fontSize = 12.sp, color = com.example.ui.theme.PolishRose600)
+                        Text("Report an issue with this trip", fontSize = 12.sp, color = com.example.ui.theme.PolishRose600, fontWeight = FontWeight.SemiBold)
                     }
                 } else {
                     OutlinedTextField(
@@ -622,10 +671,10 @@ fun RatingDialog(
             Button(
                 onClick = { onSubmitRating(score, selectedTags.toList()) },
                 shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.PolishIndigo600, contentColor = Color.White),
+                colors = ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.RideOrangePrimary, contentColor = Color.White),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Submit Feedback", fontWeight = FontWeight.Bold)
+                Text("Submit Feedback", fontWeight = FontWeight.Bold, fontSize = 15.sp)
             }
         }
     )
@@ -638,33 +687,37 @@ fun DriverCommitmentDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDecline,
+        containerColor = Color.White,
+        titleContentColor = PolishSlate900,
+        textContentColor = PolishSlate800,
+        shape = RoundedCornerShape(24.dp),
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Warning, contentDescription = "Warning", tint = com.example.ui.theme.PolishAmber500)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Important Commitment", fontWeight = FontWeight.Bold, color = com.example.ui.theme.PolishSlate900)
+                Text("Important Commitment", fontWeight = FontWeight.Bold, color = PolishSlate900)
             }
         },
         text = {
             Text(
                 text = "Only accept this booking if you can commit to completing the full booking.\n\nOnce accepted, you cannot accept another booking while this booking is active. This ensures driver reliability and customer safety.",
                 fontSize = 14.sp,
-                color = com.example.ui.theme.PolishSlate600,
-                lineHeight = 18.sp
+                color = PolishSlate700,
+                lineHeight = 19.sp
             )
         },
         confirmButton = {
             Button(
                 onClick = onAcceptCommit,
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.PolishIndigo600, contentColor = Color.White)
+                colors = ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.RideOrangePrimary, contentColor = Color.White)
             ) {
                 Text("Accept & Commit", fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
             TextButton(onClick = onDecline) {
-                Text("Decline", color = com.example.ui.theme.PolishRose600)
+                Text("Decline", color = com.example.ui.theme.PolishRose600, fontWeight = FontWeight.SemiBold)
             }
         }
     )
@@ -677,26 +730,30 @@ fun Driver15MinWarningDialog(
 ) {
     AlertDialog(
         onDismissRequest = {},
+        containerColor = Color.White,
+        titleContentColor = PolishSlate900,
+        textContentColor = PolishSlate800,
+        shape = RoundedCornerShape(24.dp),
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("⚠️", fontSize = 22.sp)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Booking Ending Soon", fontWeight = FontWeight.Bold, color = com.example.ui.theme.PolishSlate900)
+                Text("Booking Ending Soon", fontWeight = FontWeight.Bold, color = PolishSlate900)
             }
         },
         text = {
             Text(
                 text = "Your hired driver booking ends in 15 minutes.\n\nWould you like to end the booking on schedule or extend the duration?",
                 fontSize = 14.sp,
-                color = com.example.ui.theme.PolishSlate800,
-                lineHeight = 18.sp
+                color = PolishSlate800,
+                lineHeight = 19.sp
             )
         },
         confirmButton = {
             Button(
                 onClick = onExtendBooking,
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.PolishIndigo600, contentColor = Color.White)
+                colors = ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.RideOrangePrimary, contentColor = Color.White)
             ) {
                 Text("EXTEND (+1h / +30m)", fontWeight = FontWeight.Bold)
             }
@@ -706,7 +763,7 @@ fun Driver15MinWarningDialog(
                 onClick = onEndBooking,
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("END Trip", color = com.example.ui.theme.PolishSlate900, fontWeight = FontWeight.Bold)
+                Text("END Trip", color = PolishSlate900, fontWeight = FontWeight.Bold)
             }
         }
     )
@@ -721,15 +778,19 @@ fun DriverExtendDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = Color.White,
+        titleContentColor = PolishSlate900,
+        textContentColor = PolishSlate800,
+        shape = RoundedCornerShape(24.dp),
         title = {
-            Text("Extend Driver Booking", fontWeight = FontWeight.Bold, color = com.example.ui.theme.PolishSlate900)
+            Text("Extend Driver Booking", fontWeight = FontWeight.Bold, color = PolishSlate900)
         },
         text = {
             Column {
                 Text(
                     text = "Select additional hours with your professional driver:",
                     fontSize = 13.sp,
-                    color = com.example.ui.theme.PolishSlate600
+                    color = PolishSlate700
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
@@ -757,14 +818,14 @@ fun DriverExtendDialog(
             Button(
                 onClick = { onConfirmExtension(selectedExtensionHours) },
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.PolishIndigo600, contentColor = Color.White)
+                colors = ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.RideOrangePrimary, contentColor = Color.White)
             ) {
                 Text("Confirm Extension", fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", color = com.example.ui.theme.PolishSlate500)
+                Text("Cancel", color = PolishSlate600)
             }
         }
     )
@@ -780,8 +841,8 @@ private fun ExtensionChoiceChip(
 ) {
     Surface(
         shape = RoundedCornerShape(14.dp),
-        color = if (isSelected) com.example.ui.theme.PolishIndigo600 else com.example.ui.theme.PolishIndigo50,
-        border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) com.example.ui.theme.PolishIndigo600 else com.example.ui.theme.PolishBorder),
+        color = if (isSelected) com.example.ui.theme.RideOrangePrimary else Color(0xFFF8FAFC),
+        border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) com.example.ui.theme.RideOrangePrimary else com.example.ui.theme.PolishBorder),
         modifier = modifier.clickable(onClick = onClick)
     ) {
         Column(
@@ -792,12 +853,14 @@ private fun ExtensionChoiceChip(
                 text = label,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (isSelected) Color.White else com.example.ui.theme.PolishSlate900
+                color = if (isSelected) Color.White else PolishSlate900
             )
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = price,
-                fontSize = 12.sp,
-                color = if (isSelected) com.example.ui.theme.PolishIndigo100 else com.example.ui.theme.PolishIndigo600
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = if (isSelected) Color.White.copy(alpha = 0.9f) else com.example.ui.theme.RideOrangePrimary
             )
         }
     }

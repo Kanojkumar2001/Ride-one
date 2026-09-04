@@ -46,6 +46,13 @@ val PolishRose600 = Color(0xFFE11D48)
 val PolishRose100 = Color(0xFFFFE4E6)
 val PolishRose50 = Color(0xFFFFF1F2)
 
+// Vibrant Ride One Brand Colors (from UI design reference)
+val RideOrangePrimary = Color(0xFFFF5722)
+val RideOrangeLight = Color(0xFFFFF1EB)
+val RideOrangeBorder = Color(0xFFFFCCBC)
+val RideDarkBackground = Color(0xFF111827)
+val RideDarkPill = Color(0xFF1E293B)
+
 // Mapped semantic bindings for unified app styling
 val RideDeepNavy = PolishIndigo600
 val RideNavySurface = PolishIndigo700
